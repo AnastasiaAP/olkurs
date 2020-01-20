@@ -1,0 +1,23 @@
+﻿<div class="container">
+    <div class="row">
+        <div id="test"></div>
+        <div class="col-lg-6 col-md-12 col-sm-12" id="tableDiv">
+
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12" id="graphDiv">
+        </div>
+    </div>
+</div>
+<script>
+    var graphUrl = "@Url.Action("Index", "Graph")";
+    var tableUrl = "@Url.Action("Index", "Table")";
+    $("#tableDiv").load(tableUrl, function () { });
+    $.get(graphUrl, function (data) {
+        document.getElementById("graphDiv").html = display(data);
+    });
+    var display = function (data) {
+        console.log(eval(new String(data)));
+    }
+
+
+</script>

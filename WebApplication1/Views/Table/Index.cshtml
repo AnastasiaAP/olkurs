@@ -1,0 +1,108 @@
+﻿@model WebApplication1.Models.Operation
+@{
+    var DURATION_WORK = "Тривалість роботи";
+    var INDICATORS_OF_WORK = "Показники робіт";
+    var CODE_WORK = "Код роботи";
+    var CODE_WORK_VALUE = "(i,j)";
+    var DURATION_VALUE = "t(i,j)";
+    var T_P_VALUE = "t<sub>р.п.</sub>(i,j)";
+    var T_Z_VALUE = "t<sub>р.з.</sub>(i,j)";
+    var P_Z_VALUE = "t<sub>п.з.</sub>(i,j)";
+    var P_P_VALUE = "t<sub>п.п.</sub>(i,j)";
+    var R_P_VALUE = "R<sub>п.</sub>(i,j)";
+    var R_B_VALUE = "R<sub>в.</sub>(i,j)";
+    var FIRST_COLUMN = "1";
+    var SECOND_COLUMN = "2";
+    var THIRD_COLUMN = "3";
+    var FOURTH_COLUMN = "4";
+    var FIFTH_COLUMN = "5";
+    var SIXTH_COLUMN = "6";
+    var SEVENTH_COLUMN = "7";
+    var EIGHTH_COLUMN = "8";
+
+    List<string> Labels = (ViewBag.Labels != null) ? ViewBag.Labels : null;
+    List<int> Durations = (ViewBag.Durations != null) ? ViewBag.Durations : null;
+    List<int> DurationsRP = (ViewBag.DurationsRP != null) ? ViewBag.DurationsRP : null;
+    List<int> DurationsRZ = (ViewBag.DurationsRZ != null) ? ViewBag.DurationsRZ : null;
+    List<int> DurationsPZ = (ViewBag.DurationsPZ != null) ? ViewBag.DurationsPZ : null;
+    List<int> DurationsPP = (ViewBag.DurationsPP != null) ? ViewBag.DurationsPP : null;
+    List<int> DurationsP = (ViewBag.DurationsP != null) ? ViewBag.DurationsP : null;
+    List<int> DurationsB = (ViewBag.DurationsB != null) ? ViewBag.DurationsB : null;
+}
+<body class="text-center">
+    <script src="modalLoading.js"></script>
+    <div class="row p-4 m-2">
+        <div class="col-lg-12 text-center border">
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">@CODE_WORK</th>
+                        <th scope="col">@DURATION_WORK</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col">@INDICATORS_OF_WORK</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    <tr>
+                        <th scope="col">@Html.Raw(CODE_WORK_VALUE)</th>
+                        <th scope="col">@Html.Raw(DURATION_VALUE)</th>
+                        <th scope="col">@Html.Raw(T_P_VALUE)</th>
+                        <th scope="col">@Html.Raw(T_Z_VALUE)</th>
+                        <th scope="col">@Html.Raw(P_Z_VALUE)</th>
+                        <th scope="col">@Html.Raw(P_P_VALUE)</th>
+                        <th scope="col">@Html.Raw(R_P_VALUE)</th>
+                        <th scope="col">@Html.Raw(R_B_VALUE)</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">@FIRST_COLUMN</th>
+                        <th scope="col">@SECOND_COLUMN</th>
+                        <th scope="col">@THIRD_COLUMN</th>
+                        <th scope="col">@FOURTH_COLUMN</th>
+                        <th scope="col">@FIFTH_COLUMN</th>
+                        <th scope="col">@SIXTH_COLUMN</th>
+                        <th scope="col">@SEVENTH_COLUMN</th>
+                        <th scope="col">@EIGHTH_COLUMN</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @if (Labels != null && Durations != null && DurationsRP != null && DurationsRZ != null)
+                    {
+                        for (int i = 0; i < Labels.Count; i++)
+                        {
+                            if (DurationsB[i] == 0 && DurationsP[i] == 0)
+                            {
+                                <tr class="alert-danger" >
+                                    <td>@Labels[i]</td>
+                                    <td>@Durations[i]</td>
+                                    <td>@DurationsRP[i]</td>
+                                    <td>@DurationsRZ[i]</td>
+                                    <td>@DurationsPZ[i]</td>
+                                    <td>@DurationsPP[i]</td>
+                                    <td>@DurationsP[i]</td>
+                                    <td>@DurationsB[i]</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>@Labels[i]</td>
+                                    <td>@Durations[i]</td>
+                                    <td>@DurationsRP[i]</td>
+                                    <td>@DurationsRZ[i]</td>
+                                    <td>@DurationsPZ[i]</td>
+                                    <td>@DurationsPP[i]</td>
+                                    <td>@DurationsP[i]</td>
+                                    <td>@DurationsB[i]</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+</script>

@@ -1,0 +1,241 @@
+﻿
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<body class="text-center">
+    <div class="p-4">
+        <script type="text/javascript">
+        var height = 500,
+            width = 600,
+            margin = 50,
+            coordinates = [];
+
+            @if(ViewBag.Coordinates != null)
+            {
+                var list = ViewBag.Coordinates;
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    <text>
+                        coordinates.push({ x: @list[i].X, y: "@list[i].Y"});
+                    </text>
+                }
+            }
+
+            var svg = d3.select("body").append("svg")
+                .attr("class", "axis")
+                .attr("width", width)
+                .attr("height", height);
+
+            var xAxisLength = width - 2 * margin;
+            var yAxisLength = height - 2 * margin;
+
+            var scaleY = d3.scale.ordinal()
+                .domain(coordinates.map(function (d) { return d.y; }))
+                .rangeRoundBands([0, yAxisLength], 1);
+
+            var scaleX = d3.scale.linear()
+                .domain([0, @ViewBag.CriticalValue + 2])
+                .range([0, xAxisLength]);
+
+            var xAxis = d3.svg.axis()
+                .scale(scaleX)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(scaleY)
+                .orient("left");
+
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform",
+                    "translate(" + margin + "," + (height - margin) + ")")
+                .call(xAxis);
+
+            svg.append("g")
+                .attr("class", "y-axis")
+                .attr("transform",
+                    "translate(" + margin + "," + margin + ")")
+                .call(yAxis);
+
+            d3.selectAll("g.x-axis g.tick")
+                .append("line")
+                .classed("grid-line", true)
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("x2", 0)
+                .attr("y2", - (height - 2 * margin));
+
+            d3.selectAll("g.y-axis g.tick")
+                .append("line")
+                .classed("grid-line", true)
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("x2", xAxisLength)
+                .attr("y2", 0);
+
+            createChart(coordinates, "steelblue", "usd");
+
+            function createChart(coordinates, colorStroke, label) {
+                criticalPath = [];
+
+                @if(ViewBag.CriticalPath != null)
+                {
+                    var list = ViewBag.CriticalPath;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        <text>
+                            criticalPath.push("@list[i]");
+                        </text>
+                    }
+                }
+                var g = svg.append("g");
+                for (var i = 0; i < coordinates.length; i += 2) {
+                    if (criticalPath.includes(coordinates[i].y)) {
+                        g.append("line")
+                            .attr("class", "plot")
+                            .attr("x1", scaleX(coordinates[i].x) + margin)
+                            .attr("y1", scaleY(coordinates[i].y) + margin)
+                            .attr("x2", scaleX(coordinates[i + 1].x) + margin)
+                            .attr("y2", scaleY(coordinates[i + 1].y) + margin)
+                            .style({
+                                "stroke-width": 5,
+                                "stroke": colorStroke
+                            });
+                    } else {
+                        g.append("line")
+                            .attr("class", "plot")
+                            .attr("x1", scaleX(coordinates[i].x) + margin)
+                            .attr("y1", scaleY(coordinates[i].y) + margin)
+                            .attr("x2", scaleX(coordinates[i + 1].x) + margin)
+                            .attr("y2", scaleY(coordinates[i + 1].y) + margin)
+                            .style({
+                                "stroke-width": 2,
+                                "stroke": colorStroke
+                            });
+                    }
+                }
+
+                g.append("text")
+                .attr("x", width - margin/2)
+                .attr("y", height - margin - 5)
+                .attr("text-anchor", "end")
+                .style("font-size", "11px")
+                            .text("Тривалість");
+
+                g.append("text")
+                    .attr("x", width - margin / 2)
+                    .attr("y", height - margin / 2)
+                    .attr("text-anchor", "end")
+                    .style({ "font-size": 11, "font-weight": "bold" })
+                .text("Критичний шлях = " + ((@ViewBag.CriticalValue != null)? @ViewBag.CriticalValue : 0));
+
+                g.append("text")
+                .attr("x", margin + 15)
+                .attr("y", margin - 10)
+                .attr("text-anchor", "end")
+                .style("font-size", "11px")
+                            .text("Код роботи");
+
+                g.append("text")
+                    .attr("x", (width / 2))
+                    .attr("y", margin - 10)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "22px")
+                    .text("Графік прив'язки");
+
+                svg.selectAll(".dot " + label)
+                .data(coordinates)
+                .enter().append("circle")
+                .style("stroke", colorStroke)
+                .style("fill", "white")
+                .attr("class", "dot " + label)
+                .attr("r", 3)
+                .attr("cx", function (d) { return scaleX(d.x) + margin; })
+                .attr("cy", function (d) { return scaleY(d.y) + margin; });
+                };
+        </script>
+    </div>
+</body>
+
+
+
+    @*@{
+        }
+        <!DOCTYPE html>
+
+        <html>
+        <head>
+            <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+        </head>
+        <body>
+
+            <div class="row p-4 m-2 justify-content-center">
+                <div class="col-12 text-center mt-2">
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+        </body>
+        </html>
+        <script>
+
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            canvas.width = 640;
+            canvas.height = 480;
+            var nodes = [
+                { id: 1, x: 50, y: 240, text: 'B1', childs: [2, 3, 4, 5] },
+                { id: 2, x: 150, y: 400, text: 'B2', childs: [11, 12] },
+                { id: 3, x: 150, y: 80, text: 'B3' },
+                { id: 4, x: 150, y: 170, text: 'B4' },
+                { id: 5, x: 150, y: 280, text: 'B5', childs: [6, 7, 8, 9, 10] },
+                { id: 6, x: 300, y: 100, text: 'B6' },
+                { id: 7, x: 300, y: 150, text: 'B7' },
+                { id: 8, x: 300, y: 200, text: 'B8' },
+                { id: 9, x: 300, y: 250, text: 'B9' },
+                { id: 10, x: 300, y: 300, text: 'B10' },
+                { id: 11, x: 300, y: 430, text: 'B11' },
+                { id: 12, x: 300, y: 370, text: 'B12' }
+            ];
+
+
+            nodes.forEach(function (node) {
+                drawNodes(node, nodes);
+                drawTops(nodes);
+            });
+
+            function drawTops(nodes) {
+                nodes.forEach(function (node) {
+                    context.beginPath();
+                    context.arc(node.x, node.y, 20, 0, 2 * Math.PI, true);
+                    context.stroke();
+                    context.fillStyle = "white";
+                    context.fill();
+                    context.fillStyle = "black";
+                    context.fillText(node.text, node.x - 5, node.y + 3);
+                    context.closePath();
+                })
+            }
+            function drawNodes(params, nodes) {
+
+                if (params.childs && params.childs.length) {
+                    params.childs.forEach(function (id) {
+                        if (params.id != id) {
+                            var child = getNodeById({ id: id, nodes: nodes });
+                            context.beginPath();
+                            context.moveTo(params.x, params.y);
+                            context.lineTo(child.x, child.y);
+                            context.stroke();
+                            context.closePath();
+                        }
+                    });
+                }
+            }
+
+            function getNodeById(params) {
+                var result;
+                params.nodes.forEach(function (node) {
+                    if (node.id == params.id) {
+                        result = node;
+                    }
+                });
+                return result;
+            }
+        </script>*@

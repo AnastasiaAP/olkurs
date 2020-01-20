@@ -1,0 +1,121 @@
+﻿@model WebApplication1.Models.Operation
+@{
+    ViewBag.Title = "Home Page";
+
+
+    var NAME = "Код операції";
+    var DURATION = "Тривалість";
+    var ACTIONS_BEFORE = "Безпосередньо передуючі операції";
+    var ACTIONS_AFTER = "Безпосередньо наступні операції";
+    var MODAL_TITLE = "Добавити операцію";
+    var CLEAR_ALL_TITLE = "Очистити";
+    var GRAPH_TITLE = "Графічне відображення";
+    var CALCULATE_TITLE = "Переглянути часові параметри операцій";
+
+
+    List<WebApplication1.Models.Operation> Operations = new List<WebApplication1.Models.Operation>() { };
+    if (ViewBag.Operations != null)
+    {
+        Operations = ViewBag.Operations;
+    }
+}
+    <div class="row p-4 m-2 justify-content-center">
+        <div class="col-lg-12">
+            <table class="table text-center table-hover" id="TableValues">
+                <thead style="text-align: center">
+                    <tr>
+                        <th style="display:none"></th>
+                        <th scope="col">@NAME</th>
+                        <th scope="col">@DURATION</th>
+                        <th scope="col">
+                            <a href="#" data-toggle="tooltip" data-placement="bottom" title="Добавити операцію"><i class="fa fa-lg fa-plus-circle m-1" style="color:forestgreen" onclick="AddOperation()"></i></a>
+                            <a href="#" data-toggle="tooltip" data-placement="bottom" title="Очистити все"><i class="fa fa-lg fa-trash-o" style="color:orange" onclick="ClearAll()"></i></a>
+                        </th>
+                        <th scope="col">
+                            <a class="btn btn-outline-success" href="#" data-toggle="tooltip" data-placement="bottom" title="Порахувати" onclick="DrawGraph()">Графік прив'язки</a>
+                            <a class="btn btn-outline-success" href="#" data-toggle="tooltip" data-placement="bottom" title="Порахувати" onclick="DrawTable()">Таблиця параметрів часу робіт</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Operations)
+                    {
+                        <tr>
+                            <td style="display:none">@o.Id</td>
+                            <td align="center">
+                                (@o.FirstEvent,@o.SecondEvent)
+                            </td>
+                            <td align="center">
+                                @o.Duration
+                            </td>
+                            <td valign="middle" align="center"></td>
+                            <td valign="middle" align="center">
+                                <a href="#" style="color: orangered" data-toggle="tooltip" data-placement="bottom" title="Видалити"><i class="fa fa-lg fa-trash" onclick="DeleteOperation(@o.Id)"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var ADD_MODAL_TITLE = "Добавити операцію";
+    var EDIT_MODAL_TITLE = "Редагування";
+
+    var DrawGraph = function () {
+            $(location).attr('href', "@Url.Action("Index", "Graph")");
+    }
+    var DrawTable = function () {
+            $(location).attr('href', "@Url.Action("Index", "Table")");
+    }
+    var AddOperation = function () {
+        $('#ModalTitle').text(function (i, oldText) {
+            return ADD_MODAL_TITLE;
+        });
+        var url = "/Operations/Create/";
+
+        $("#myModalBodyDiv").load(url, function () {
+            $("#myModal").modal("show");
+        })
+    }
+
+    var EditOperation = function (id) {
+        $('#ModalTitle').text(function (i, oldText) {
+            return EDIT_MODAL_TITLE;
+        });
+        var url = "/Operations/Edit?id=" + id;
+
+        $("#myModalBodyDiv").load(url, function () {
+            $("#myModal").modal("show");
+        })
+    }
+
+    var ClearAll = function () {
+        $.post( "/Operations/ClearAll/", function() {
+            $(location).attr('href', "@Url.Action("Index", "Operations")");
+        });
+    }
+
+    var Calculate = function () {
+        $(location).attr('href', "@Url.Action("Index", "Calculation")");
+    }
+
+    var DeleteOperation = function (id) {
+        var url = "/Operations/Delete?id=" + id;
+        $.post(url, function () {
+            $(location).attr('href', "@Url.Action("Index", "Operations")");
+        });
+    }
+
+    var table = $('#TableValues').DataTable();
+    $('#TableValues tbody').on('click', 'tr', function () {
+        EditOperation(table.row(this).data()[0]);
+    });
+
+</script>
+

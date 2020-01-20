@@ -1,0 +1,63 @@
+﻿@model WebApplication1.Models.Operation
+@{
+
+    Layout = "";
+    var ACTION_NAME = "Операція";
+    var DURACTION = "Тривалість";
+    var ADD_TITLE = "Добавити";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row justify-content-center">
+            <div class="col-4 align-self-center text-center">
+                <label class="text-primary">@ACTION_NAME</label>
+            </div>
+            <div class="col-4">
+                @Html.EditorFor(model => model.FirstEvent, new { htmlAttributes = new { @class = "form-control", id = "FirstEvent", @min = "1" } })
+                @Html.ValidationMessageFor(model => model.FirstEvent, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-4">
+                @Html.EditorFor(model => model.SecondEvent, new { htmlAttributes = new { @class = "form-control", id = "SecondEvent", @min = "1" } })
+                @Html.ValidationMessageFor(model => model.SecondEvent, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-1">
+            <div class="col-4 align-self-center text-center">
+                <label class="text-primary">@DURACTION</label>
+            </div>
+            <div class="col-8">
+                @Html.EditorFor(model => model.Duration, new { htmlAttributes = new { @class = "form-control", id = "Duration", @min = "1" } })
+                @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group text-center m-1" style="float: right">
+                <a class="btn btn-success text-white" value="create" onclick="PostCreateAction()">@ADD_TITLE</a>
+        </div>
+    </div>
+}
+
+<script>
+    function PostCreateAction() {
+
+        var url = "/Operations/Create";
+        var firstEvent = $("#FirstEvent").val();
+        var secondEvent = $("#SecondEvent").val();
+        var duration = $("#Duration").val();
+        $.post(url, { FirstEvent: firstEvent, SecondEvent: secondEvent, Duration: duration }, function (data) {
+            if (data.length == 0) {
+                $("#myModal").modal("hide");
+                $(location).attr('href', "@Url.Action("Index", "Operations")");
+            } else {
+                $("#myModalBodyDiv").html(data);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/bootstrap-grid.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    @Styles.Render("~/Content/Site.css")
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+
+    @RenderPage("../../Modals/ModalViews.cshtml")
+
+    @RenderPage("Header.cshtml")
+
+    <div class="mt-2">
+        @RenderBody()
+    </div>
+
+    @RenderPage("Footer.cshtml")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
